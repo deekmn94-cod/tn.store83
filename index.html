@@ -133,12 +133,6 @@
         .price { color: #0a0205; font-size: 1.2em; font-weight: bold; }
         .buy-button { display: inline-block; background: #070707; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px; }
 
-        /* ส่วนของ Admin ที่เพิ่มเข้ามา */
-        #adminPanel { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: none; border: 2px solid #008cba; }
-        .admin-input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 5px; }
-        .btn-add { background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; }
-        .btn-delete { background: #ff4757; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px; position: absolute; top: 10px; right: 10px; display: none; }
-        .admin-toggle { text-align: right; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -167,15 +161,6 @@
 <div class="container">
     <h1>TN.STORE</h1>
 
-    <div id="adminPanel">
-        <h3>เพิ่มสินค้าใหม่</h3>
-        <input type="text" id="pName" class="admin-input" placeholder="ชื่อสินค้า">
-        <input type="text" id="pDesc" class="admin-input" placeholder="รายละเอียด">
-        <input type="text" id="pPrice" class="admin-input" placeholder="ราคา (เช่น 149,000 กีบ)">
-        <input type="text" id="pImage" class="admin-input" placeholder="URL รูปภาพ (Direct Link)">
-        <button class="btn-add" onclick="addProduct()">เพิ่มสินค้าลงหน้าร้าน</button>
-    </div>
-
     <div class="search-container">
         <input type="text" id="searchInput" onkeyup="searchProduct()" placeholder="ພິມຊື່ສີນຄ້າເພື່ອຄົ້ນຫາ...">
     </div>
@@ -193,9 +178,9 @@
     <div id="productGrid" class="product-grid">
         </div>
 
-    <div id="promo-page" style="display:none; background: white; padding: 20px; border-radius: 15px; text-align: center; margin-top: 20px; border: 2px dashed #ff4757;">
-        <h2 style="color: #ff4757;">🔥 โปรโมชั่นพิเศษ 🔥</h2>
-        <p>✅ <b>แพ็กเก็ต A:</b> ซื้อ 2 แถม 1</p>
+    <div id="promo-page" style="display:none; background: white; padding: 20px; border-radius: 15px; text-align: center; margin-top: 20px; border: 2px dashed #faf8f8;">
+        <h2 style="color: #0c0c0c;">🔥 โปรโมชั่นพิเศษ 🔥</h2>
+        <p>✅ <b>...:</b>...</p>
         <button onclick="showPage('home')" style="padding: 10px; cursor: pointer;">กลับหน้าหลัก</button>
     </div>
     <footer style="text-align: center; padding: 20px; background: #fbfafa; margin-top: 20px;">📍 ຮ້ານ TN Store ຕັ້ງຢູ່ນະຄອນຫຼວງວຽງຈັນ: [laos] | โทร: [ເບີໂທລະສັບ 020 59 112 313 ]</footer>
@@ -269,13 +254,25 @@ function showPage(pageId) {
                 }
             }
         }
-    // 1. ข้อมูลสินค้าเริ่มต้น (จะถูกเซฟลง LocalStorage)
     let defaultProducts = [
-        { id: 1, name: "ເສື້ອແຂນຍາວງາມໆ", desc: "ເສື້ອນີ້ນໍາເຂົ້າຈາກປະເທດຈີນ", price: "149,000 ກີບ", img: "https://i.ibb.co/h11HbgHj/A1.jpg" }
-    ];
+    { 
+        id: 1, 
+        name: "ເສື້ອແຂນຍາວງາມໆ", 
+        desc: "ເສື້ອນີ້ນໍາເຂົ້າຈາກປະເທດຈີນ  ສີນຄ້າພີອໍເດີ້   ", 
+        price: "149,000 ກີບ", 
+        img: "https://i.ibb.co/h11HbgHj/A1.jpg" 
+    },
+    { 
+        id: 2, 
+        name: "ເສື້ອແຂນຍາວງາມໆ", 
+        desc: "ເສື້ອນີ້ນໍາເຂົ້າຈາກປະເທດຈີນ  ສີນຄ້າພີອໍເດີ້", 
+        price: "149 000ກີບ", 
+        img: "https://i.ibb.co/5Wn9Qtsk/A10.jpg" 
+    }
+];
 
     // โหลดข้อมูลจาก LocalStorage หรือใช้ค่าเริ่มต้น
-    let products = JSON.parse(localStorage.getItem('tn_products')) || defaultProducts;
+    let products = defaultProducts;
     let isAdmin = false;
 
     // 2. ฟังก์ชันแสดงสินค้า
@@ -286,7 +283,6 @@ function showPage(pageId) {
         products.forEach((pd, index) => {
             grid.innerHTML += `
                 <div class="product-card">
-                    <button class="btn-delete" style="display: ${isAdmin ? 'block' : 'none'}" onclick="deleteProduct(${index})">ลบ</button>
                     <img src="${pd.img}" alt="${pd.name}">
                     <h3>${pd.name}</h3>
                     <p>${pd.desc}</p>
@@ -297,47 +293,6 @@ function showPage(pageId) {
         });
     }
     let clickCount = 0;
-
-// ฟังก์ชันลับ: คลิกที่หัวข้อ TN.STORE 5 ครั้งเพื่อเข้าโหมด Admin
-document.querySelector('h1').onclick = function() {
-    clickCount++;
-    if (clickCount === 10) {
-        let password = prompt("กรุณาใส่รหัสลับเจ้าของร้าน:");
-        if (password === "ASD12345asd") { // ตั้งรหัสลับของคุณที่นี่
-            isAdmin = true;
-            document.getElementById('adminPanel').style.display = 'block';
-            renderProducts();
-            alert("ยินดีต้อนรับเจ้าของร้าน!");
-        }
-        clickCount = 0; // รีเซ็ตตัวนับ
-    }
-};
-
-    // 3. ฟังก์ชันเพิ่มสินค้า (Admin)
-    function addProduct() {
-        const name = document.getElementById('pName').value;
-        const desc = document.getElementById('pDesc').value;
-        const price = document.getElementById('pPrice').value;
-        const img = document.getElementById('pImage').value;
-
-        if(name && price && img) {
-            products.push({ id: Date.now(), name, desc, price, img });
-            saveAndRefresh();
-            alert("เพิ่มสินค้าเรียบร้อย!");
-            // ล้างค่าใน input
-            document.querySelectorAll('.admin-input').forEach(input => input.value = '');
-        } else {
-            alert("กรุณากรอกข้อมูลให้ครบ");
-        }
-    }
-
-    // 4. ฟังก์ชันลบสินค้า
-    function deleteProduct(index) {
-        if(confirm("คุณต้องการลบสินค้านี้ใช่ไหม?")) {
-            products.splice(index, 1);
-            saveAndRefresh();
-        }
-    }
 
     function saveAndRefresh() {
         localStorage.setItem('tn_products', JSON.stringify(products));
