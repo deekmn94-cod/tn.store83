@@ -1,0 +1,371 @@
+<html lang="th">
+<head>
+    <link rel="icon" type="image/png" href="https://i.ibb.co/qYFQM5LP/B1.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TN Store - Admin System</title>
+    <style>
+        /* สไตล์หมวดหมู่ที่เพิ่มใหม่ */
+.category-box {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+.category-tag {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #333;
+    text-decoration: none;
+}
+.category-tag:hover {
+    background: #008cba;
+    color: white;
+    border-color: #008cba;
+}
+        /* ปุ่ม 3 ขีด */
+.menu-icon {
+    font-size: 30px;
+    cursor: pointer;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 999;
+    background: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* แถบเมนูข้างๆ (Side Nav) */
+.sidenav {
+    height: 100%;
+    width: 0; /* เริ่มต้นให้ซ่อนไว้ */
+    position: fixed;
+    z-index: 101;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s; /* ความเร็วตอนเลื่อนออกมา */
+    padding-top: 60px;
+}
+
+.sidenav a {
+    padding: 15px 32px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover { color: #f1f1f1; }
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+        /* สไตล์ของช่องค้นหา */
+.search-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+#searchInput {
+    width: 80%;
+    max-width: 400px;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 25px; /* ขอบมน */
+    outline: none;
+}
+#searchInput:focus { border-color: #008cba; }
+        /* ส่วนการตกแต่ง (CSS) */
+        body { font-family: 'Arial', sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        h1 { text-align: center; color: #333; }
+        
+        /* การจัดวางสินค้า */
+        .product-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px; 
+        }
+        
+        /* กล่องสินค้า */
+        .product-card { 
+            background: white; padding: 15px; border-radius: 10px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;
+        }
+        .product-card img { max-width: 100%; border-radius: 5px; height: 200px; object-fit: cover; }
+        .price { color: #0a0205; font-size: 1.2em; font-weight: bold; }
+        .buy-button { 
+            display: inline-block; background: #070707; color: white; 
+            padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px; 
+        }
+        /* CSS เดิมของคุณ */
+        body { font-family: 'Arial', sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        h1 { text-align: center; color: #333; }
+        
+        .menu-icon { font-size: 30px; cursor: pointer; position: fixed; top: 15px; left: 15px; z-index: 999; background: white; padding: 5px 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .sidenav { height: 100%; width: 0; position: fixed; z-index: 101; top: 0; left: 0; background-color: #111; overflow-x: hidden; transition: 0.5s; padding-top: 60px; }
+        .sidenav a { padding: 15px 32px; text-decoration: none; font-size: 20px; color: #818181; display: block; transition: 0.3s; }
+        .sidenav a:hover { color: #f1f1f1; }
+        .sidenav .closebtn { position: absolute; top: 0; right: 25px; font-size: 36px; }
+
+        .search-container { text-align: center; margin-bottom: 30px; }
+        #searchInput { width: 80%; max-width: 400px; padding: 12px; font-size: 16px; border: 2px solid #ddd; border-radius: 25px; outline: none; }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .product-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; position: relative; }
+        .product-card img { max-width: 100%; border-radius: 5px; height: 200px; object-fit: cover; }
+        .price { color: #0a0205; font-size: 1.2em; font-weight: bold; }
+        .buy-button { display: inline-block; background: #070707; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px; }
+
+        /* ส่วนของ Admin ที่เพิ่มเข้ามา */
+        #adminPanel { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: none; border: 2px solid #008cba; }
+        .admin-input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 5px; }
+        .btn-add { background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; }
+        .btn-delete { background: #ff4757; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px; position: absolute; top: 10px; right: 10px; display: none; }
+        .admin-toggle { text-align: right; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    
+<div class="menu-icon" onclick="openNav()">&#9776;</div>
+
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="#" onclick="showPage('home')">หน้าแรก</a>
+    <a href="#" onclick="showPage('promo')">โปรโมชั่น</a>
+</div>
+<div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+    <a href="https://www.facebook.com/share/14TMsL4xRL8/" style="text-decoration: none; color: rgb(33, 27, 27); background: #fefeff; padding: 10px 15px; border-radius: 5px; font-size: 14px;">Facebook</a>
+    
+    <a href="https://www.tiktok.com/@tn.store83?_r=1&_t=ZS-93AMqTfuZUK" style="text-decoration: none; color: rgb(8, 1, 1); background: #fefdfd; padding: 10px 15px; border-radius: 5px; font-size: 14px;">TikTok</a>
+    
+    <a href="https://www.instagram.com/floralhaven_19?igsh=MW04dGgyNWtkZmI5Mw==" style="text-decoration: none; color: rgb(8, 2, 2); background: #fcfbfb; padding: 10px 15px; border-radius: 5px; font-size: 14px;">Instagram</a>
+</div>
+<header>
+  <div class="logo">
+    <a href="index.html">
+      <img src="https://i.ibb.co/qYFQM5LP/B1.jpg" " alt="ชื่อโลโก้บริษัท" width="80">
+    </a>
+  </div>
+</header>
+<div class="container">
+    <h1>TN.STORE</h1>
+
+    <div id="adminPanel">
+        <h3>เพิ่มสินค้าใหม่</h3>
+        <input type="text" id="pName" class="admin-input" placeholder="ชื่อสินค้า">
+        <input type="text" id="pDesc" class="admin-input" placeholder="รายละเอียด">
+        <input type="text" id="pPrice" class="admin-input" placeholder="ราคา (เช่น 149,000 กีบ)">
+        <input type="text" id="pImage" class="admin-input" placeholder="URL รูปภาพ (Direct Link)">
+        <button class="btn-add" onclick="addProduct()">เพิ่มสินค้าลงหน้าร้าน</button>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" onkeyup="searchProduct()" placeholder="ພິມຊື່ສີນຄ້າເພື່ອຄົ້ນຫາ...">
+    </div>
+    <div class="search-container">
+    <div class="category-box">
+        <span class="category-tag" onclick="setSearch('ເສື້ອ')">ເສື້ອຜ້າ</span>
+        <span class="category-tag" onclick="setSearch('ສົ່ງ')">ສົ່ງ</span>
+        <span class="category-tag" onclick="setSearch('ເກີບ')">ເກີບ</span>
+        <span class="category-tag" onclick="setSearch('ຂະໝົມ')">ຂະໝົມ</span>
+        <span class="category-tag" onclick="setSearch('ເຄື່ອງປະດັບ')">ເຄື່ຶອງປະດັບ</span>
+        <span class="category-tag" onclick="setSearch('')">ທັ້ງໝົດ</span>
+    </div>
+
+
+    <div id="productGrid" class="product-grid">
+        </div>
+
+    <div id="promo-page" style="display:none; background: white; padding: 20px; border-radius: 15px; text-align: center; margin-top: 20px; border: 2px dashed #ff4757;">
+        <h2 style="color: #ff4757;">🔥 โปรโมชั่นพิเศษ 🔥</h2>
+        <p>✅ <b>แพ็กเก็ต A:</b> ซื้อ 2 แถม 1</p>
+        <button onclick="showPage('home')" style="padding: 10px; cursor: pointer;">กลับหน้าหลัก</button>
+    </div>
+    <footer style="text-align: center; padding: 20px; background: #fbfafa; margin-top: 20px;">📍 ຮ້ານ TN Store ຕັ້ງຢູ່ນະຄອນຫຼວງວຽງຈັນ: [laos] | โทร: [ເບີໂທລະສັບ 020 59 112 313 ]</footer>
+
+</div>
+
+<script>
+    function sendOrder(index) {
+    const item = products[index]; // ດຶງຂໍ້ມູນສິນຄ້າຈາກ Array ຕາມລຳດັບທີ່ກົດ
+    const phoneNumber = "8562059112313"; // ເບີໂທຂອງເຈົ້າ
+
+    // ຈັດຮູບແບບຂໍ້ຄວາມທີ່ຈະສົ່ງ
+    const message = `${item.img}\n\n` +
+
+    `ສະບາຍດີ TN Store! ຂ້ອຍສົນໃຈຊື້ສິນຄ້ານີ້:\n\n` +
+                    `📦 ຊື່ສິນຄ້າ: ${item.name}\n` +
+                    `💰 ລາຄາ: ${item.price}\n` +
+                    `📝 ລາຍລະອຽດ: ${item.desc}`;
+
+    // ແປງຂໍ້ຄວາມໃຫ້ເປັນ URL Format
+    const encodedMessage = encodeURIComponent(message);
+
+    // ເປີດໄປໜ້າ WhatsApp
+    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+}
+function setSearch(value) {
+    document.getElementById('searchInput').value = value;
+    searchProduct(); // เรียกใช้ฟังก์ชันค้นหาเดิมของคุณ
+}
+    // ฟังก์ชันเปลี่ยนหน้า กำหนดเองได้
+function showPage(pageId) {
+    let promo = document.getElementById('promo-page');
+    let grid = document.querySelector('.product-grid');
+    let search = document.querySelector('.search-container');
+    let title = document.querySelector('h1');
+
+    if (pageId === 'promo') {
+        promo.style.display = 'block';  // โชว์หน้าโปรโมชั่น
+        grid.style.display = 'none';   // ซ่อนสินค้า
+        search.style.display = 'none'; // ซ่อนช่องค้นหา
+        title.innerText = "ໂປຣໂມຊັ້ນ";
+    } else {
+        promo.style.display = 'none';
+        grid.style.display = 'grid';
+        search.style.display = 'block';
+        title.innerText = "TN.STOER";
+    }
+    closeNav(); // ปิดเมนูข้าง
+}
+        // 1. ฟังก์ชันเปิด-ปิดเมนู 3 ขีด
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+
+        // 2. ฟังก์ชันระบบค้นหาสินค้า
+        function searchProduct() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.getElementsByClassName('product-card');
+            
+            for (let i = 0; i < cards.length; i++) {
+                // ดึงชื่อสินค้าจากแท็ก <h3> มาเช็ค
+                let name = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                if (name.includes(input)) {
+                    cards[i].style.display = ""; // แสดงถ้าตรงคำค้น
+                } else {
+                    cards[i].style.display = "none"; // ซ่อนถ้าไม่ตรง
+                }
+            }
+        }
+    // 1. ข้อมูลสินค้าเริ่มต้น (จะถูกเซฟลง LocalStorage)
+    let defaultProducts = [
+        { id: 1, name: "ເສື້ອແຂນຍາວງາມໆ", desc: "ເສື້ອນີ້ນໍາເຂົ້າຈາກປະເທດຈີນ", price: "149,000 ກີບ", img: "https://i.ibb.co/h11HbgHj/A1.jpg" }
+    ];
+
+    // โหลดข้อมูลจาก LocalStorage หรือใช้ค่าเริ่มต้น
+    let products = JSON.parse(localStorage.getItem('tn_products')) || defaultProducts;
+    let isAdmin = false;
+
+    // 2. ฟังก์ชันแสดงสินค้า
+    function renderProducts() {
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = '';
+        
+        products.forEach((pd, index) => {
+            grid.innerHTML += `
+                <div class="product-card">
+                    <button class="btn-delete" style="display: ${isAdmin ? 'block' : 'none'}" onclick="deleteProduct(${index})">ลบ</button>
+                    <img src="${pd.img}" alt="${pd.name}">
+                    <h3>${pd.name}</h3>
+                    <p>${pd.desc}</p>
+                    <p class="price">${pd.price}</p>
+                    <button class="buy-button" onclick="sendOrder(${index})">WhatsApp</button>
+                </div>
+            `;
+        });
+    }
+    let clickCount = 0;
+
+// ฟังก์ชันลับ: คลิกที่หัวข้อ TN.STORE 5 ครั้งเพื่อเข้าโหมด Admin
+document.querySelector('h1').onclick = function() {
+    clickCount++;
+    if (clickCount === 10) {
+        let password = prompt("กรุณาใส่รหัสลับเจ้าของร้าน:");
+        if (password === "ASD12345asd") { // ตั้งรหัสลับของคุณที่นี่
+            isAdmin = true;
+            document.getElementById('adminPanel').style.display = 'block';
+            renderProducts();
+            alert("ยินดีต้อนรับเจ้าของร้าน!");
+        }
+        clickCount = 0; // รีเซ็ตตัวนับ
+    }
+};
+
+    // 3. ฟังก์ชันเพิ่มสินค้า (Admin)
+    function addProduct() {
+        const name = document.getElementById('pName').value;
+        const desc = document.getElementById('pDesc').value;
+        const price = document.getElementById('pPrice').value;
+        const img = document.getElementById('pImage').value;
+
+        if(name && price && img) {
+            products.push({ id: Date.now(), name, desc, price, img });
+            saveAndRefresh();
+            alert("เพิ่มสินค้าเรียบร้อย!");
+            // ล้างค่าใน input
+            document.querySelectorAll('.admin-input').forEach(input => input.value = '');
+        } else {
+            alert("กรุณากรอกข้อมูลให้ครบ");
+        }
+    }
+
+    // 4. ฟังก์ชันลบสินค้า
+    function deleteProduct(index) {
+        if(confirm("คุณต้องการลบสินค้านี้ใช่ไหม?")) {
+            products.splice(index, 1);
+            saveAndRefresh();
+        }
+    }
+
+    function saveAndRefresh() {
+        localStorage.setItem('tn_products', JSON.stringify(products));
+        renderProducts();
+    }
+
+    // ระบบค้นหาและเมนูเดิมของคุณ
+    function searchProduct() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let cards = document.getElementsByClassName('product-card');
+        for (let i = 0; i < cards.length; i++) {
+            let name = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+            cards[i].style.display = name.includes(input) ? "" : "none";
+        }
+    }
+
+    function openNav() { document.getElementById("mySidenav").style.width = "250px"; }
+    function closeNav() { document.getElementById("mySidenav").style.width = "0"; }
+
+    function showPage(pageId) {
+        document.getElementById('promo-page').style.display = (pageId === 'promo') ? 'block' : 'none';
+        document.getElementById('productGrid').style.display = (pageId === 'home') ? 'grid' : 'none';
+        closeNav();
+    }
+
+    // รันครั้งแรก
+    renderProducts();
+</script>
+
+</body>
+</html>
