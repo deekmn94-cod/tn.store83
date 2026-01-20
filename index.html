@@ -152,12 +152,11 @@
     <a href="https://www.instagram.com/floralhaven_19?igsh=MW04dGgyNWtkZmI5Mw==" style="text-decoration: none; color: rgb(8, 2, 2); background: #fcfbfb; padding: 10px 15px; border-radius: 5px; font-size: 14px;">Instagram</a>
 </div>
 <header>
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-    <img src="https://i.ibb.co/xtTr6Qbr/5fa4b0f82c6ae48e779621bb14093cc0-tplv-tiktokx-cropcenter-1080-1080.jpg" alt="Logo" 
-         style="width: 120px; height: 120px; object-fit: cover; border-radius: 20px; margin-bottom: 10px; border: 2px solid #eee;">
-    
-    <h1 style="margin: 0; font-family: sans-serif;"></h1>
-</div>
+  <div class="logo">
+    <a href="index.html">
+      <img src="https://i.ibb.co/xtTr6Qbr/5fa4b0f82c6ae48e779621bb14093cc0-tplv-tiktokx-cropcenter-1080-1080.jpg" " alt="ชื่อโลโก้บริษัท" width="80">
+    </a>
+  </div>
 </header>
 <div class="container">
     <h1>TN.STORE</h1>
@@ -171,7 +170,7 @@
         <span class="category-tag" onclick="setSearch('ສົ່ງ')">ສົ່ງ</span>
         <span class="category-tag" onclick="setSearch('ເກີບ')">ເກີບ</span>
         <span class="category-tag" onclick="setSearch('ຂະໝົມ')">ຂະໝົມ</span>
-        <span class="category-tag" onclick="setSearch('ເຄື່ອງປະດັບ')">ເຄື່ອງປະດັບ</span>
+        <span class="category-tag" onclick="setSearch('ເຄື່ອງປະດັບ')">ເຄື່ຶອງປະດັບ</span>
         <span class="category-tag" onclick="setSearch('')">ທັ້ງໝົດ</span>
     </div>
 
@@ -189,94 +188,41 @@
 </div>
 
 <script>
-    function sendOrder(index) {
-    const item = products[index]; // ດຶງຂໍ້ມູນສິນຄ້າຈາກ Array ຕາມລຳດັບທີ່ກົດ
-    const phoneNumber = "8562059112313"; // ເບີໂທຂອງເຈົ້າ
+    // 1. ຕັ້ງຄ່າການເຊື່ອມຕໍ່ (ເອົາແຕ່ ID ຂອງ Sheet ມາ)
+const SHEET_ID = '11GIYTxq6zA0o7lJ_Qzy094jnvC48tqW_3fhAWTm2I6w';
+const SHEET_NAME = 'ชีด1'; // ຊື່ແທັບຂອງເຈົ້າ
 
-    // ຈັດຮູບແບບຂໍ້ຄວາມທີ່ຈະສົ່ງ
-    const message = `${item.img}\n\n` +
+const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
 
-    `ສະບາຍດີ TN Store! ຂ້ອຍສົນໃຈຊື້ສິນຄ້ານີ້:\n\n` +
-                    `📦 ຊື່ສິນຄ້າ: ${item.name}\n` +
-                    `💰 ລາຄາ: ${item.price}\n` +
-                    `📝 ລາຍລະອຽດ: ${item.desc}`;
 
-    // ແປງຂໍ້ຄວາມໃຫ້ເປັນ URL Format
-    const encodedMessage = encodeURIComponent(message);
 
-    // ເປີດໄປໜ້າ WhatsApp
-    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
-}
-function setSearch(value) {
-    document.getElementById('searchInput').value = value;
-    searchProduct(); // เรียกใช้ฟังก์ชันค้นหาเดิมของคุณ
-}
-    // ฟังก์ชันเปลี่ยนหน้า กำหนดเองได้
-function showPage(pageId) {
-    let promo = document.getElementById('promo-page');
-    let grid = document.querySelector('.product-grid');
-    let search = document.querySelector('.search-container');
-    let title = document.querySelector('h1');
 
-    if (pageId === 'promo') {
-        promo.style.display = 'block';  // โชว์หน้าโปรโมชั่น
-        grid.style.display = 'none';   // ซ่อนสินค้า
-        search.style.display = 'none'; // ซ่อนช่องค้นหา
-        title.innerText = "ໂປຣໂມຊັ້ນ";
-    } else {
-        promo.style.display = 'none';
-        grid.style.display = 'grid';
-        search.style.display = 'block';
-        title.innerText = "TN.STOER";
+    function fetchGoogleSheets() {
+        fetch(url)
+            .then(res => res.text())
+            .then(data => {
+                // ຕັດຂໍ້ຄວາມສ່ວນເກີນທີ່ Google ສົ່ງມາໃຫ້ເປັນ JSON ທີ່ຖືກຕ້ອງ
+                const jsonData = JSON.parse(data.substring(47, data.length - 2));
+                const rows = jsonData.table.rows;
+                
+                // ແປງຂໍ້ມູນຈາກແຕ່ລະ Row ໃຫ້ມາຢູ່ໃນຮູບແບບທີ່ Code ເຮົາເຂົ້າໃຈ
+                products = rows.filter((row, index) => index > 0).map((row, index) => ({
+                    id: index + 1,
+                    name: row.c[0] ? row.c[0].v : '',
+                    desc: row.c[1] ? row.c[1].v : '',
+                    price: row.c[2] ? row.c[2].v : '',
+                    img: row.c[3] ? row.c[3].v : ''
+                }));
+
+                renderProducts(); // ສະແດງຜົນສິນຄ້າທັນທີ
+            })
+            .catch(err => {
+                console.error("Error:", err);
+                document.getElementById('productGrid').innerHTML = "<p style='text-align:center;'>ບໍ່ສາມາດໂຫຼດຂໍ້ມູນໄດ້, ກະລຸນາກວດສອບການ Share Google Sheets.</p>";
+            });
     }
-    closeNav(); // ปิดเมนูข้าง
-}
-        // 1. ฟังก์ชันเปิด-ปิดเมนู 3 ขีด
-        function openNav() {
-            document.getElementById("mySidenav").style.width = "250px";
-        }
 
-        function closeNav() {
-            document.getElementById("mySidenav").style.width = "0";
-        }
-
-        // 2. ฟังก์ชันระบบค้นหาสินค้า
-        function searchProduct() {
-            let input = document.getElementById('searchInput').value.toLowerCase();
-            let cards = document.getElementsByClassName('product-card');
-            
-            for (let i = 0; i < cards.length; i++) {
-                // ดึงชื่อสินค้าจากแท็ก <h3> มาเช็ค
-                let name = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
-                if (name.includes(input)) {
-                    cards[i].style.display = ""; // แสดงถ้าตรงคำค้น
-                } else {
-                    cards[i].style.display = "none"; // ซ่อนถ้าไม่ตรง
-                }
-            }
-        }
-    let defaultProducts = [
-    { 
-        id: 1, 
-        name: "ເສື້ອແຂນຍາວງາມໆ", 
-        desc: "ເສື້ອນີ້ນໍາເຂົ້າຈາກປະເທດຈີນ  ສີນຄ້າພີອໍເດີ້   ", 
-        price: "149,000 ກີບ", 
-        img: "https://i.ibb.co/h11HbgHj/A1.jpg" 
-    },
-    { 
-        id: 2, 
-        name: "ເສື້ອແຂນຍາວງາມໆ", 
-        desc: "ເສື້ອນີ້ນໍາເຂົ້າຈາກປະເທດຈີນ  ສີນຄ້າພີອໍເດີ້", 
-        price: "149 000ກີບ", 
-        img: "https://i.ibb.co/5Wn9Qtsk/A10.jpg" 
-    }
-];
-
-    // โหลดข้อมูลจาก LocalStorage หรือใช้ค่าเริ่มต้น
-    let products = defaultProducts;
-    let isAdmin = false;
-
-    // 2. ฟังก์ชันแสดงสินค้า
+    // 3. ຟັງຊັນສະແດງສິນຄ້າໃນໜ້າເວັບ
     function renderProducts() {
         const grid = document.getElementById('productGrid');
         grid.innerHTML = '';
@@ -284,7 +230,7 @@ function showPage(pageId) {
         products.forEach((pd, index) => {
             grid.innerHTML += `
                 <div class="product-card">
-                    <img src="${pd.img}" alt="${pd.name}">
+                    <img src="${pd.img}" alt="${pd.name}" onerror="this.src='https://via.placeholder.com/250?text=No+Image'">
                     <h3>${pd.name}</h3>
                     <p>${pd.desc}</p>
                     <p class="price">${pd.price}</p>
@@ -293,14 +239,22 @@ function showPage(pageId) {
             `;
         });
     }
-    let clickCount = 0;
 
-    function saveAndRefresh() {
-        localStorage.setItem('tn_products', JSON.stringify(products));
-        renderProducts();
+    // 4. ຟັງຊັນສົ່ງຄຳສັ່ງຊື້ໄປ WhatsApp
+    function sendOrder(index) {
+        const item = products[index];
+        const phoneNumber = "8562059112313";
+        const message = `ສະບາຍດີ TN Store! ຂ້ອຍສົນໃຈຊື້ສິນຄ້ານີ້:\n\n` +
+                        `📦 ຊື່ສິນຄ້າ: ${item.name}\n` +
+                        `💰 ລາຄາ: ${item.price}\n` +
+                        `📝 ລາຍລະອຽດ: ${item.desc}\n\n` +
+                        `ຮູບພາບ: ${item.img}`;
+
+        const encodedMessage = encodeURIComponent(message);
+        window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
     }
 
-    // ระบบค้นหาและเมนูเดิมของคุณ
+    // 5. ຟັງຊັນຄົ້ນຫາ ແລະ ປ່ຽນໜ້າ (ໃຊ້ຂອງເດີມ)
     function searchProduct() {
         let input = document.getElementById('searchInput').value.toLowerCase();
         let cards = document.getElementsByClassName('product-card');
@@ -310,21 +264,25 @@ function showPage(pageId) {
         }
     }
 
+    function setSearch(value) {
+        document.getElementById('searchInput').value = value;
+        searchProduct();
+    }
+
     function openNav() { document.getElementById("mySidenav").style.width = "250px"; }
     function closeNav() { document.getElementById("mySidenav").style.width = "0"; }
 
     function showPage(pageId) {
         document.getElementById('promo-page').style.display = (pageId === 'promo') ? 'block' : 'none';
         document.getElementById('productGrid').style.display = (pageId === 'home') ? 'grid' : 'none';
+        document.querySelector('.search-container').style.display = (pageId === 'home') ? 'block' : 'none';
         closeNav();
     }
 
-    // รันครั้งแรก
-    renderProducts();
+    // ເລີ່ມຕົ້ນດຶງຂໍ້ມູນເມື່ອເປີດເວັບ
+    fetchGoogleSheets();
 </script>
 
 </body>
 
 </html>
-
-
